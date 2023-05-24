@@ -130,31 +130,34 @@ public class BillDo extends HttpServlet {
     }
     protected void modify(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException{
         String billId = req.getParameter("billid");
-        BillServiceIml billServiceIml = new BillServiceIml();
-        Bill bill = billServiceIml.getBllById(Integer.parseInt(billId));
-        req.setAttribute("bill", bill);
+        System.out.println("进入订阅记录修改界面 id = "+billId);
+        BillServiceIml service = new BillServiceIml();
+        Bill bill = service.findBillById(Integer.parseInt(billId));
+        req.setAttribute("bill",bill);
+        System.out.println("bill-->"+bill.toString());
         req.getRequestDispatcher("/jsp/billmodify.jsp").forward(req,resp);
     }
     protected void modifySave(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException{
         User o = (User) req.getSession().getAttribute(Constant.USER_SESSION);
         String uid = req.getParameter("id");
-        String billCode = req.getParameter("billCode");
-        String productName = req.getParameter("productName");
-        String productUnit = req.getParameter("productUnit");
-        String productCount = req.getParameter("productCount");
-        String totalPrice = req.getParameter("totalPrice");
-        String providerId = req.getParameter("providerId");
+//        修改为只能修改是否归还
+//        String billCode = req.getParameter("billCode");
+//        String productName = req.getParameter("productName");
+//        String productUnit = req.getParameter("productUnit");
+//        String productCount = req.getParameter("productCount");
+//        String totalPrice = req.getParameter("totalPrice");
+//        String providerId = req.getParameter("providerId");
         String isPayment = req.getParameter("isPayment");
         Map<String, Object> map = new HashMap<>();
-        map.put("billCode",billCode);
-        map.put("productName",productName);
-        map.put("productUnit",productUnit);
+//        map.put("billCode",billCode);
+//        map.put("productName",productName);
+//        map.put("productUnit",productUnit);
         DecimalFormat df = new DecimalFormat("0.00");
         df.setMaximumFractionDigits(2);
-        map.put("productCount",df.format(Float.parseFloat(productCount)));
-        map.put("totalPrice",df.format(Float.parseFloat(totalPrice)));
+//        map.put("productCount",df.format(Float.parseFloat(productCount)));
+//        map.put("totalPrice",df.format(Float.parseFloat(totalPrice)));
         map.put("isPayment",Integer.parseInt(isPayment));
-        map.put("providerId",Integer.parseInt(providerId));
+//        map.put("providerId",Integer.parseInt(providerId));
         map.put("modifyBy",o.getId());
         map.put("modifyDate",new Date());
         BillService service = new BillServiceIml();
@@ -164,6 +167,7 @@ public class BillDo extends HttpServlet {
         resp.sendRedirect(req.getContextPath()+"/jsp/bill.do?method=query");
     }
     protected void view(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
         String id = req.getParameter("billid");
         System.out.println("id--->"+id);
         BillService service = new BillServiceIml();

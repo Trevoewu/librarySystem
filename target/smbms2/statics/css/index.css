@@ -5,9 +5,16 @@
     padding: 0;
     margin: 0;
     box-sizing: border-box;
+    font-family: 'Noto Serif SC', serif;
+    font-family: 'Roboto', sans-serif;
+
 }
 body{
-    background-color: #080710;
+    /*background-color: #080710;*/
+    background-image: url("/statics/images/img_1.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    /*background-position: center;*/
 }
 .background{
     width: 430px;
@@ -47,7 +54,7 @@ form{
     position: absolute;
     transform: translate(-50%,-50%);
     top: 50%;
-    left: 50%;
+    left: 20%;
     border-radius: 10px;
     backdrop-filter: blur(10px);
     border: 2px solid rgba(255,255,255,0.1);
@@ -88,7 +95,7 @@ input{
 ::placeholder{
     color: #e5e5e5;
 }
-button{
+button,.btn{
     margin-top: 50px;
     width: 100%;
     background-color: #ffffff;
@@ -120,4 +127,8 @@ button{
 }
 .social i{
     margin-right: 4px;
+}
+.info{
+    color: indianred;
+    text-align: center;
 }

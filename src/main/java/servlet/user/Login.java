@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
 public class Login extends HttpServlet {
     private UserService service;
     @Override
@@ -28,7 +27,7 @@ public class Login extends HttpServlet {
                 req.getSession().setAttribute(Constant.USER_SESSION,user);
                 resp.sendRedirect("/jsp/frame.jsp");
             } else {
-                req.getSession().setAttribute("error","username or password incorrect");
+                req.getSession().setAttribute("error","用户名或密码错误");
                 resp.sendRedirect("/login.jsp");
             }
         } else {

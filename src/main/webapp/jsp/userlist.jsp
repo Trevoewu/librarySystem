@@ -23,8 +23,9 @@
             </select>
 
             <input type="hidden" name="pageIndex" value="1"/>
-            <input	value="查 询" type="submit" id="searchbutton">
-            <a href="${pageContext.request.contextPath}/jsp/useradd.jsp" >添加用户</a>
+<%--            <input	value="查 询" type="submit" id="searchbutton">--%>
+            <button class="button-55" role="button" >搜索</button>
+            <a href="${pageContext.request.contextPath}/jsp/useradd.jsp" id="addBtn" class="button-55">添加用户</a>
         </form>
     </div>
     <!--用户-->

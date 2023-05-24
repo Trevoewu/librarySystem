@@ -16,7 +16,7 @@
   %>
   <!-- Design by foolishdeveloper.com -->
   <title>Glassmorphism login Form Tutorial in html css</title>
-
+  <link href="https://fonts.googleapis.com/css2?family=Long+Cang&family=Noto+Serif+SC:wght@200;400;600;700&family=Roboto:ital,wght@1,500&family=Ysabeau:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
@@ -25,19 +25,15 @@
   <style media="screen"></style>
 </head>
 <body>
-<div class="background">
-  <div class="shape"></div>
-  <div class="shape"></div>
-</div>
 <form action="${pageContext.request.contextPath}/login.do" name="actionForm" id="actionForm" method="post">
-  <h3>Login Here</h3>
-
+  <h3>图书管理系统</h3>
+  <div class="info" id="error">${error}</div>
   <label for="username">Username</label>
-  <input type="text" placeholder="Email or Phone" id="username" name="userCode">
+  <input type="text" placeholder="用户名" id="username" name="userCode">
 
   <label for="password">Password</label>
-  <input type="password" placeholder="Password" id="password" name="userPassword">
-  <button>Log In</button>
+  <input type="password" placeholder="密码" id="password" name="userPassword">
+  <button class="btn">登录</button>
 </form>
 </body>
 </html>

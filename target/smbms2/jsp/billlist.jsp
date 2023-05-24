@@ -31,9 +31,9 @@
                 <option value="1" ${queryIsPayment == 1 ? "selected=\"selected\"":"" }>未归还</option>
                 <option value="2" ${queryIsPayment == 2 ? "selected=\"selected\"":"" }>已归还</option>
             </select>
+            <button class="button-55" role="button">搜索</button>
+            <a class="button-55" id="addBtn" href="${pageContext.request.contextPath }/jsp/billadd.jsp">添加借阅记录</a>
 
-            <input value="查 询" type="submit" id="searchbutton">
-            <a href="${pageContext.request.contextPath }/jsp/billadd.jsp">添加借阅记录</a>
         </form>
     </div>
     <!--账单表格 样式和图书公用-->

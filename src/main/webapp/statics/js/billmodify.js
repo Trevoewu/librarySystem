@@ -123,9 +123,10 @@ $(function(){
 		productName.blur();
 		productUnit.blur();
 		providerId.blur();
-		if(productName.attr("validateStatus") == "true" 
-			&& productUnit.attr("validateStatus") == "true" 
-			&& providerId.attr("validateStatus") == "true"){
+		if(/*productName.attr("validateStatus") == "true"
+			&& productUnit.attr("validateStatus") == "true"
+			&& providerId.attr("validateStatus") == "true"*/
+			true){
 			if(confirm("是否确认提交数据")){
 				$("#billForm").submit();
 			}

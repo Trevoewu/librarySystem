@@ -69,22 +69,22 @@ $(function(){
 		}
 	}).on("focus",function(){
 		//显示友情提示
-		validateTip(billCode.next(),{"color":"#666666"},"* 请输入订单编码",false);
+		validateTip(billCode.next(),{"color":"#666666"},"* 请输入图书编码",false);
 	}).focus();
 	
 	productName.on("focus",function(){
-		validateTip(productName.next(),{"color":"#666666"},"* 请输入商品名称",false);
+		validateTip(productName.next(),{"color":"#666666"},"* 请输入图书名称",false);
 	}).on("blur",function(){
 		if(productName.val() != null && productName.val() != ""){
 			validateTip(productName.next(),{"color":"green"},imgYes,true);
 		}else{
-			validateTip(productName.next(),{"color":"red"},imgNo+" 商品名称不能为空，请重新输入",false);
+			validateTip(productName.next(),{"color":"red"},imgNo+" 图书名称不能为空，请重新输入",false);
 		}
 		
 	});
 	
 	productUnit.on("focus",function(){
-		validateTip(productUnit.next(),{"color":"#666666"},"* 请输入商品单位",false);
+		validateTip(productUnit.next(),{"color":"#666666"},"* 请输入图书单位",false);
 	}).on("blur",function(){
 		if(productUnit.val() != null && productUnit.val() != ""){
 			validateTip(productUnit.next(),{"color":"green"},imgYes,true);
