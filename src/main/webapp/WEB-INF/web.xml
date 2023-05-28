@@ -63,6 +63,14 @@
     <servlet-name>BillDo</servlet-name>
     <url-pattern>/jsp/bill.do</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>BookDo</servlet-name>
+    <servlet-class>servlet.book.BookDo</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>BookDo</servlet-name>
+    <url-pattern>/jsp/book.do</url-pattern>
+  </servlet-mapping>
 <!--  过滤器： 对未登录用户过滤， 不允许访问/jsp下面的所以界面-->
   <filter>
     <filter-name>Filter</filter-name>

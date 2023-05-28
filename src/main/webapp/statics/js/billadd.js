@@ -53,7 +53,7 @@ $(function(){
 			}
 		},
 		error:function(data){//当访问时候，404，500 等非200的错误状态码
-			validateTip(providerId.next(),{"color":"red"},imgNo+" 获取供应商列表error",false);
+			validateTip(providerId.next(),{"color":"red"},imgNo+" 获取图书列表error",false);
 		}
 	});
 	/*
@@ -95,12 +95,12 @@ $(function(){
 	});
 	
 	providerId.on("focus",function(){
-		validateTip(providerId.next(),{"color":"#666666"},"* 请选择供应商",false);
+		validateTip(providerId.next(),{"color":"#666666"},"* 请选择图书",false);
 	}).on("blur",function(){
 		if(providerId.val() != null && providerId.val() != "" && providerId.val() != 0){
 			validateTip(providerId.next(),{"color":"green"},imgYes,true);
 		}else{
-			validateTip(providerId.next(),{"color":"red"},imgNo+" 供应商不能为空，请选择",false);
+			validateTip(providerId.next(),{"color":"red"},imgNo+" 图书不能为空，请选择",false);
 		}
 		
 	});

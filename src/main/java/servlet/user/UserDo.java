@@ -3,6 +3,7 @@ package servlet.user;
 import Bean.Role;
 import Bean.User;
 import com.alibaba.fastjson.JSONArray;
+import org.apache.log4j.Logger;
 import service.role.RoleServiceImpl;
 import service.user.UserService;
 import service.user.UserServiceImpl;
@@ -25,6 +26,7 @@ import java.util.*;
 public class UserDo extends HttpServlet {
     private UserService service;
 private static int PAGE_SIZE;
+private static Logger LOG = Logger.getLogger(UserDo.class);
 /*
     类加载读取配置文件： 目前需要读取的数据有：
     PAGE_SIZE 用于设置页面大小
@@ -92,8 +94,8 @@ static {
         HttpSession session = req.getSession();
         User user = (User) session.getAttribute(Constant.USER_SESSION);
         String newPwd = req.getParameter("newpassword");
-        System.out.println("用户输入的：new password: "+newPwd);
-        System.out.println("Session password: "+user.getUserPassword()+", id: "+ user.getId());
+        LOG.info("["+new Date()+"] " +"["+ req.getRemoteAddr() +"]"+" 用户"+user.getUserCode()+"输入的：new password: "+newPwd);
+        LOG.info("["+new Date()+"] " +"["+ req.getRemoteAddr() +"]"+"Session password: "+user.getUserPassword()+", id: "+ user.getId());
         Integer id = user.getId();
         boolean flag;
         //method 值为  savepwd, 表示用户执行修改密码操作
@@ -102,12 +104,12 @@ static {
             flag = service.updateUser(id, "userPassword", newPwd);
             //修改成功
             if(flag){
-                System.out.println("修改成功");
                 req.setAttribute("message","密码修改成功， 请重新登录");
                 //  移除Session
                 session.removeAttribute(Constant.USER_SESSION);
+                LOG.info("["+new Date()+"] " +"["+ req.getRemoteAddr() +"]"+" 用户"+user.getUserCode()+"修改密码成功，新密码-->"+newPwd);
             } else {
-                System.out.println("密码修改失败");
+                LOG.info("["+new Date()+"] " +"["+ req.getRemoteAddr() +"]"+" 用户"+user.getUserCode()+"修改密码失败");
                 req.setAttribute("message","密码修改失败");
             }
         } else {
@@ -159,6 +161,7 @@ static {
         String userName = req.getParameter("queryname");
         String userRole = req.getParameter("queryUserRole");
         String pageIndex = req.getParameter("pageIndex");
+        User user = (User) req.getSession().getAttribute(Constant.USER_SESSION);
         // 检验参数的合法性
         if( userName == null){
             userName ="";
@@ -172,6 +175,7 @@ static {
         //3. 准备前端需要的参数： queryUserName，queryUserRole ,roleList，userList,
         String queryUserName = userName;
         String queryUserRole = userRole;
+        LOG.info("["+new Date()+"] " +"["+ req.getRemoteAddr() +"]"+" 用户"+user.getUserCode()+"查询用户信息");
         List<Role> roleList;
         List<User> userList;
         // 以及下列参数： totalPageCount（总页数），totalCount（查询到的用户数），currentPageNo（当前页）
@@ -225,7 +229,7 @@ static {
         user.setCreationDate(new Date());
         //3.
         service = new UserServiceImpl();
-        System.out.println(user.toString());
+        LOG.info("["+new Date()+"] " +"["+ req.getRemoteAddr() +"]"+" 用户"+user.getUserCode()+"添加用户"+user.toString());
         boolean res = service.addUser(user);
         if(res) {
             resp.sendRedirect(req.getContextPath()+"/jsp/user.do?method=query");
@@ -251,7 +255,6 @@ static {
     protected void isUserCodeExit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
         //1. 从前端获取参数
         String userCode = req.getParameter("userCode");
-        System.out.println("userCode-->"+userCode);
         //2. 准备前端需要的数据， 数据类型json, 属性值userCode: exit
         Map<String, String> map = new HashMap<String, String>();
         if(userCode == null || userCode.length() == 0 || userCode.equals("")){
@@ -276,6 +279,7 @@ static {
         String uid = req.getParameter("uid");
         service = new UserServiceImpl();
         User user = service.findById(Integer.parseInt(uid));
+        LOG.info("["+new Date()+"] " +"["+ req.getRemoteAddr() +"]"+" 用户"+user.getUserCode()+"查看用户信息");
         req.setAttribute("user", user);
         if(!resp.isCommitted())
         req.getRequestDispatcher(req.getContextPath()+"/jsp/userview.jsp").forward(req, resp);
@@ -340,10 +344,6 @@ static {
             boolean res = service.updateUser(Integer.parseInt(uid), key, map.get(key));
         }
         resp.sendRedirect(req.getContextPath()+"/jsp/user.do?method=query");
-    }
-
-    public static void main(String[] args) {
-        System.out.println(new Date().toString());
     }
 }
 

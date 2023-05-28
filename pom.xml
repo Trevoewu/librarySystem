@@ -13,19 +13,14 @@
   </properties>
 
   <dependencies>
-<!--    aspectj -->
-    <dependency>
-      <groupId>org.aspectj</groupId>
-      <artifactId>aspectjrt</artifactId>
-      <version>1.9.7</version>
-    </dependency>
-    <dependency>
-      <groupId>org.aspectj</groupId>
-      <artifactId>aspectjweaver</artifactId>
-      <version>1.9.7</version>
-    </dependency>
-
-    <dependency>
+      <!--mybatis-->
+      <!-- https://mvnrepository.com/artifact/org.mybatis/mybatis -->
+      <dependency>
+          <groupId>org.mybatis</groupId>
+          <artifactId>mybatis</artifactId>
+          <version>3.5.13</version>
+      </dependency>
+      <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>3.8.1</version>
@@ -75,7 +70,13 @@
       <artifactId>fastjson</artifactId>
       <version>2.0.31</version>
     </dependency>
-
+      <!-- https://mvnrepository.com/artifact/log4j/log4j -->
+<!--      log4j-->
+      <dependency>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+          <version>1.2.17</version>
+      </dependency>
   </dependencies>
   <build>
     <finalName>smbms2</finalName>
@@ -89,33 +90,26 @@
           <target>${java.version}</target>
         </configuration>
       </plugin>
-<!--        配置和激活AspectJ编织器-->
-        <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>aspectj-maven-plugin</artifactId>
-            <version>1.14.0</version>
-            <configuration>
-                <complianceLevel>1.8</complianceLevel>
-                <source>1.8</source>
-                <target>1.8</target>
-                <weaveDirectories>
-                    <weaveDirectory>${project.build.outputDirectory}</weaveDirectory>
-                </weaveDirectories>
-                <aspectLibraries>
-                    <aspectLibrary>
-                        <groupId>org.aspectj</groupId>
-                        <artifactId>aspectjrt</artifactId>
-                    </aspectLibrary>
-                </aspectLibraries>
-            </configuration>
-            <executions>
-                <execution>
-                    <goals>
-                        <goal>compile</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>
     </plugins>
+<!--      Maven静态资源过滤问题 导致生成的target文件不包含xml，导致IO错误-->
+      <resources>
+          <resource>
+              <directory>src/main/java</directory>
+              <includes>
+                  <include>**/*.properties</include>
+                  <include>**/*.xml</include>
+              </includes>
+              <filtering>false</filtering>
+          </resource>
+          <resource>
+              <directory>src/main/resources</directory>
+              <includes>
+                  <include>**/*.properties</include>
+                  <include>**/*.xml</include>
+              </includes>
+              <filtering>false</filtering>
+          </resource>
+      </resources>
   </build>
+
 </project>
