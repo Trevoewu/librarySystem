@@ -28,7 +28,7 @@
             </div>
             <div class="description">
               <p class="title">${book.bookName}<br>
-                <span class="author">${book.proContact}</span></p>
+                <span class="author">${book.author}</span></p>
               <input type="hidden" value="${book.id}">
             </div>
           </div>

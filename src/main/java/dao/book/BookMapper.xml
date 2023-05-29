@@ -2,14 +2,50 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<!--namespace：绑定一个对应的Dao/Mapper接口-->
-<!--        dao.book.BookMapper-->
 <mapper namespace="dao.book.BookMapper">
     <resultMap id="Book" type="Book">
     <result property="bookName" column="proName"/>
+        <result property="ISN" column="proCode"/>
+        <result property="bookDesc" column="proDesc"/>
+        <result property="author" column="proContact"/>
+        <result property="price" column="proPhone"/>
+        <result property="publisher" column="proFax"/>
+        <result property="bookDesc" column="proDesc"/>
     </resultMap>
     <!--select查询语句-->
     <select id="getRelativeBook" resultMap="Book">
         select * from smbms_provider where proDesc like #{bookDesc}  and id != #{id};
     </select>
-</mapper>
+
+    <select id="getBookList" resultMap="Book">
+        SELECT * from smbms_provider p
+        <where>
+            <if test="ISN != null">
+                proCode like  #{ISN}
+            </if>
+            <if test="bookName != null">
+                and proName like #{bookName}
+            </if>
+        </where>
+        ORDER BY p.creationDate DESC LIMIT #{currPage},#{pageSize}
+    </select>
+
+        <select id="getBookCount" resultType="_int">
+
+        </select>
+   <delete id="delBook" >
+       DELETE FROM smbms_provider WHERE id = #{id}
+   </delete>
+    <update id="addBook" parameterType="Book">
+        insert into smbms_provider
+            (proCode,proName,proDesc,proContact,proPhone,proAddress,proFax,createdBy,creationDate)
+                values(#{ISN},#{bookName},#{bookDesc},#{author},#{price},#{proAddress},#{publisher},#{createdBy},#{creationDate})
+    </update>
+    <select id="getBookById" resultMap="Book">
+        Select * from smbms_provider where id = #{id}
+    </select>
+    <update id="updateBook" parameterType="Book">
+        update smbms_provider set ${key} = #{value} where id = #{id};
+    </update>
+
+    </mapper>
