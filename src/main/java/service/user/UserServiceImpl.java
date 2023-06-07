@@ -3,14 +3,17 @@ package service.user;
 import Bean.User;
 import dao.user.UserDao;
 import dao.user.UserDaoImpl;
+import jakarta.annotation.Resource;
+import org.springframework.stereotype.Service;
 import util.DB;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
+@Service
 public class UserServiceImpl implements UserService {
+    @Resource(name = "userDaoImpl")
     private UserDao dao;
 
     @Override

@@ -1,6 +1,7 @@
 package dao.role;
 
 import Bean.Role;
+import org.springframework.stereotype.Repository;
 import util.DB;
 
 import java.sql.Connection;
@@ -8,7 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
+@Repository
 public class RoleDaoImpl implements RoleDao{
 
     /*

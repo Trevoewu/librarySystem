@@ -3,13 +3,17 @@ package service.Pro;
 import Bean.Provider;
 import dao.Pro.ProDao;
 import dao.Pro.ProDaoImpl;
+import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import util.DB;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
-
+@Service
 public class ProServiceImpl implements ProService{
+   @Resource(name = "proDaoImpl")
     private ProDao proDao;
 
     @Override
@@ -17,7 +21,6 @@ public class ProServiceImpl implements ProService{
         int affected = 0;
         try {
             Connection conn = DB.getConnection();
-            proDao = new ProDaoImpl();
             affected = proDao.delPro(conn,id);
             conn.close();
         } catch (SQLException e) {
@@ -33,7 +36,6 @@ public class ProServiceImpl implements ProService{
         int affected = 0;
         try {
             Connection conn = DB.getConnection();
-            proDao = new ProDaoImpl();
             affected = proDao.addPro(conn,pro);
             conn.close();
         } catch (SQLException e) {
@@ -47,7 +49,6 @@ public class ProServiceImpl implements ProService{
     @Override
     public Provider getProById(int id) {
         Provider pro = new Provider();
-        proDao = new ProDaoImpl();
         try {
             Connection conn = DB.getConnection();
             pro = proDao.getProById(conn,id);
@@ -64,7 +65,6 @@ public class ProServiceImpl implements ProService{
         int affected = 0;
         try {
             Connection conn = DB.getConnection();
-            proDao = new ProDaoImpl();
             affected = proDao.updatePro(conn,key,value,id);
             conn.close();
         } catch (SQLException e) {
@@ -80,7 +80,6 @@ public class ProServiceImpl implements ProService{
         int count = 0;
         try {
             Connection conn = DB.getConnection();
-            proDao = new ProDaoImpl();
             count = proDao.getProCount(conn, ProCode, ProName);
             DB.close(conn,null,null);
         } catch (SQLException e) {
@@ -94,7 +93,6 @@ public class ProServiceImpl implements ProService{
 
     @Override
     public List<Provider> getProList(String ProCode, String ProName, int currPage, int pageSize) {
-        proDao  = new ProDaoImpl();
         List<Provider> proList;
         try {
             Connection conn = DB.getConnection();

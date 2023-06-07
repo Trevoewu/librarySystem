@@ -3,16 +3,18 @@ package service.bill;
 import Bean.Bill;
 import dao.bill.BillDao;
 import dao.bill.BillDaoImpl;
+import jakarta.annotation.Resource;
+import org.springframework.stereotype.Service;
 import util.DB;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-public class BillServiceIml implements BillService{
+@Service()
+public class BillServiceImpl implements BillService{
+    @Resource()
     private BillDao billDao;
-
     @Override
     public boolean addBill(Bill bill) {
         int affectedRows = 0;
@@ -20,7 +22,6 @@ public class BillServiceIml implements BillService{
         try {
             conn = DB.getConnection();
             conn.setAutoCommit(false);
-            billDao = new BillDaoImpl();
             affectedRows =  billDao.addBill(conn,bill);
             conn.commit();
         } catch (SQLException e) {
@@ -39,7 +40,6 @@ public class BillServiceIml implements BillService{
     @Override
     public Bill findBillById(int id) {
         Bill bill;
-        billDao = new BillDaoImpl();
         try {
             Connection conn = DB.getConnection();
             bill = billDao.findById(conn, id);
@@ -54,7 +54,6 @@ public class BillServiceIml implements BillService{
     @Override
     public boolean delBillById(int id) {
         int affected = 0;
-        billDao = new BillDaoImpl();
         try {
             Connection conn = DB.getConnection();
             affected = billDao.delBill(conn, id);
@@ -73,7 +72,6 @@ public class BillServiceIml implements BillService{
         try {
             conn = DB.getConnection();
             conn.setAutoCommit(false);
-            billDao = new BillDaoImpl();
             i = billDao.updateBill(conn, id, key, value);
             conn.commit();
         } catch (SQLException e) {
@@ -91,7 +89,6 @@ public class BillServiceIml implements BillService{
 
     @Override
     public Bill getBllById(int id) {
-        billDao = new BillDaoImpl();
         Bill bill;
         try {
             Connection conn = DB.getConnection();
@@ -109,7 +106,6 @@ public class BillServiceIml implements BillService{
         int count = 0;
         try {
             Connection conn = DB.getConnection();
-            billDao = new BillDaoImpl();
             count = billDao.getBillCount(conn, productName, proId);
             DB.close(conn,null,null);
         } catch (SQLException e) {
@@ -125,7 +121,6 @@ public class BillServiceIml implements BillService{
         List<Bill> billList = new ArrayList<>();
         try {
             Connection conn = DB.getConnection();
-            billDao = new BillDaoImpl();
             billList = billDao.getBillList(conn, productName, proId, currPage, pageSize, isPayment);
             DB.close(conn,null,null);
         } catch (SQLException e) {

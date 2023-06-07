@@ -1,16 +1,12 @@
 package servlet.provider;
 
-import Bean.Bill;
 import Bean.Provider;
-import Bean.Role;
 import Bean.User;
 import com.alibaba.fastjson.JSONArray;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import service.Pro.ProService;
 import service.Pro.ProServiceImpl;
-import service.bill.BillService;
-import service.bill.BillServiceIml;
-import service.role.RoleServiceImpl;
-import service.user.UserServiceImpl;
 import util.Constant;
 import util.DB;
 import util.PageSupport;
@@ -22,12 +18,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.*;
 
 public class ProviderDo extends HttpServlet {
     private static int PAGE_SIZE;
+    protected static ProService proService;
     static {
         //读取配置文件
         //1、创建properties对象
@@ -40,6 +35,9 @@ public class ProviderDo extends HttpServlet {
             e.printStackTrace();
         }
         PAGE_SIZE = Integer.parseInt(properties.getProperty("PAGE_SIZE"));
+        //通过Spring获取proService
+        ApplicationContext applicationContext = new AnnotationConfigApplicationContext(util.spring.SpringConfig.class);
+        proService = applicationContext.getBean("proServiceImpl", ProServiceImpl.class);
     }
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -84,7 +82,6 @@ public class ProviderDo extends HttpServlet {
         List<Provider> providerList;
         // 以及下列参数： totalPageCount（总页数），totalCount（查询到的用户数），currentPageNo（当前页）
         // 这些参数的获取需要先调用userService.getUserCount查询用户数， 然后调用PageSupport提供分页支持
-        ProService proService = new ProServiceImpl();
         int totalCount = proService.getProCount(queryProCode, queryProName);
         PageSupport pageSupport = new PageSupport();
         pageSupport.setPageSize(PAGE_SIZE);
@@ -108,7 +105,6 @@ public class ProviderDo extends HttpServlet {
     }
     protected void getProList(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException{
         resp.setContentType("application/json");
-        ProService proService = new ProServiceImpl();
         List<Provider> proList = proService.getProList(null, null, 1, PAGE_SIZE);
         String jsonString = JSONArray.toJSONString(proList);
         PrintWriter writer = resp.getWriter();
@@ -117,8 +113,7 @@ public class ProviderDo extends HttpServlet {
     }
     protected void modify(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException{
         String proId = req.getParameter("proid");
-        ProService service = new ProServiceImpl();
-        Provider pro = service.getProById(Integer.parseInt(proId));
+        Provider pro = proService.getProById(Integer.parseInt(proId));
         req.setAttribute("provider", pro);
         req.getRequestDispatcher("/jsp/providermodify.jsp").forward(req,resp);
     }
@@ -142,17 +137,15 @@ public class ProviderDo extends HttpServlet {
         map.put("proDesc",proDesc);
         map.put("modifyBy",o.getId());
         map.put("modifyDate",new Date());
-        ProService service = new ProServiceImpl();
         for (String key : map.keySet()) {
-            boolean res = service.updatePro( key, map.get(key),Integer.parseInt(uid));
+            boolean res = proService.updatePro( key, map.get(key),Integer.parseInt(uid));
         }
         resp.sendRedirect(req.getContextPath()+"/jsp/provider.do?method=query");
     }
     protected void view(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String id = req.getParameter("proid");
         System.out.println("id--->"+id);
-        ProService service = new ProServiceImpl();
-        Provider pro = service.getProById(Integer.parseInt(id));
+        Provider pro = proService.getProById(Integer.parseInt(id));
         req.setAttribute("provider",pro);
         System.out.println(pro.toString());
         if(!resp.isCommitted())
@@ -164,8 +157,7 @@ public class ProviderDo extends HttpServlet {
         if(proId == null || proId.equals("")){
             hashMap.put("delResult","false");
         } else {
-            ProService serviceIml = new ProServiceImpl();
-            boolean flag = serviceIml.delPro(Integer.parseInt(proId));
+            boolean flag = proService.delPro(Integer.parseInt(proId));
             if(flag) {
                 hashMap.put("delResult","true");
             } else {
@@ -189,8 +181,7 @@ public class ProviderDo extends HttpServlet {
         Provider pro = new Provider(
                 proCode,proName,proDesc,proContact,proPhone,proAddress,proFax,user.getId(),new Date()
         );
-        ProService serviceIml = new ProServiceImpl();
-        boolean res = serviceIml.addPro(pro);
+        boolean res = proService.addPro(pro);
         if(res) {
             resp.sendRedirect("/jsp/provider.do?method=query");
         } else {

@@ -4,7 +4,8 @@ import Bean.Book;
 import Bean.User;
 import dao.book.BookMapper;
 import org.apache.ibatis.session.SqlSession;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import service.user.UserService;
 import service.user.UserServiceImpl;
 import util.Constant;
@@ -22,7 +23,7 @@ import java.util.logging.LogRecord;
 
 public class Login extends HttpServlet {
     private UserService service;
-    private static Logger logger = Logger.getLogger(Login.class);
+    private static Logger logger = LoggerFactory.getLogger(Login.class);
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String userCode = req.getParameter("userCode");

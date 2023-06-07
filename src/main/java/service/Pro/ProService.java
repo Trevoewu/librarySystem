@@ -6,7 +6,7 @@ import java.sql.Connection;
 import java.util.List;
 
 public interface ProService {
-    public List<Provider> getProList(String ProCode, String ProName, int currPage, int pageSize);
+    List<Provider> getProList(String ProCode, String ProName, int currPage, int pageSize);
     int getProCount(String ProCode, String ProName);
     boolean delPro(int id);
     boolean addPro( Provider pro);

@@ -3,6 +3,7 @@ package dao.Pro;
 import Bean.Provider;
 import Bean.Provider;
 import org.junit.Test;
+import org.springframework.stereotype.Repository;
 import util.DB;
 
 import java.sql.Connection;
@@ -11,14 +12,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
+@Repository
 public class ProDaoImpl implements ProDao{
-@Test
-    public void test() throws SQLException, ClassNotFoundException {
-    ProDaoImpl dao = new ProDaoImpl();
-    int count = dao.getProCount(DB.getConnection(), "G", "北京");
-    System.out.println(count);
-}
 
     @Override
     public int delPro(Connection conn, int id) {
@@ -85,7 +80,6 @@ public class ProDaoImpl implements ProDao{
                 pro.setModifyDate(rs.getDate("modifyDate"));
             }
             DB.close(null,null,rs);
-            System.out.println(pro.toString());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } catch (ClassNotFoundException e) {

@@ -1,7 +1,8 @@
 package servlet.user;
 
 import Bean.User;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import util.Constant;
 
 import javax.servlet.ServletException;
@@ -14,7 +15,7 @@ import java.util.Date;
 
 public class Logout extends HttpServlet {
 
-    private static Logger logger = Logger.getLogger(Login.class);
+    private static Logger logger = LoggerFactory.getLogger(Logout.class);
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User attribute = (User) req.getSession().getAttribute(Constant.USER_SESSION);
@@ -23,7 +24,7 @@ public class Logout extends HttpServlet {
         logger.info("["+new Date()+"]"+"["+req.getRemoteAddr()+"]"+"info: 用户"+attribute.getUserCode()+"登出");
     } else {
 
-        logger.error("["+new Date()+"]"+"["+req.getRemoteAddr()+"]"+"error: 用户"+attribute.getUserCode()+"重复登出");
+        logger.error("["+new Date()+"]"+"["+req.getRemoteAddr()+"]"+"error: 用户重复登出");
     }
     resp.sendRedirect("/login.jsp");
 

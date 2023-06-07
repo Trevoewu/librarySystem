@@ -2,6 +2,7 @@ package dao.bill;
 
 import Bean.Bill;
 import org.junit.Test;
+import org.springframework.stereotype.Repository;
 import util.DB;
 
 import java.sql.Connection;
@@ -9,7 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
+@Repository
 public class BillDaoImpl implements BillDao {
     @Override
     public int addBill(Connection conn, Bill bill) {

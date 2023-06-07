@@ -2,6 +2,7 @@ package dao.user;
 
 import Bean.User;
 import org.junit.Test;
+import org.springframework.stereotype.Repository;
 import util.DB;
 
 import java.sql.Connection;
@@ -11,18 +12,11 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
+@Repository
 public class UserDaoImpl implements UserDao{
     private User user;
     private Connection conn;
     private String sql;
-    @Test
-    public void testAddUser() throws SQLException, ParseException, ClassNotFoundException {
-        UserDaoImpl dao = new UserDaoImpl();
-        User user1 = findById(53);
-        System.out.println(user1.toString());
-    }
-
     @Override
     public int delUser(Connection conn, int id) {
         int affectedRow = 0;

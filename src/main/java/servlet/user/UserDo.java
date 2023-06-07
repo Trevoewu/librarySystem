@@ -3,7 +3,11 @@ package servlet.user;
 import Bean.Role;
 import Bean.User;
 import com.alibaba.fastjson.JSONArray;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import service.role.RoleService;
 import service.role.RoleServiceImpl;
 import service.user.UserService;
 import service.user.UserServiceImpl;
@@ -24,9 +28,12 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class UserDo extends HttpServlet {
-    private UserService service;
-private static int PAGE_SIZE;
-private static Logger LOG = Logger.getLogger(UserDo.class);
+    private static UserService userService;
+    private static RoleService roleService;
+    //页面大小
+    private static int PAGE_SIZE;
+    //日志
+    private static Logger LOG = LoggerFactory.getLogger(UserDo.class);
 /*
     类加载读取配置文件： 目前需要读取的数据有：
     PAGE_SIZE 用于设置页面大小
@@ -44,6 +51,10 @@ static {
         e.printStackTrace();
     }
     PAGE_SIZE = Integer.parseInt(properties.getProperty("PAGE_SIZE"));
+    //Instantiate singleton bean form Spring  container
+    ApplicationContext applicationContext = new AnnotationConfigApplicationContext(util.spring.SpringConfig.class);
+    roleService = applicationContext.getBean("roleServiceImpl", RoleServiceImpl.class);
+    userService = applicationContext.getBean("userServiceImpl", UserServiceImpl.class);
 }
 /*
     一个复用的Servlet更具请求传递的方法(method)属性值的不同
@@ -100,8 +111,7 @@ static {
         boolean flag;
         //method 值为  savepwd, 表示用户执行修改密码操作
         if(newPwd != null){
-            service = new UserServiceImpl();
-            flag = service.updateUser(id, "userPassword", newPwd);
+            flag = userService.updateUser(id, "userPassword", newPwd);
             //修改成功
             if(flag){
                 req.setAttribute("message","密码修改成功， 请重新登录");
@@ -180,8 +190,6 @@ static {
         List<User> userList;
         // 以及下列参数： totalPageCount（总页数），totalCount（查询到的用户数），currentPageNo（当前页）
         // 这些参数的获取需要先调用userService.getUserCount查询用户数， 然后调用PageSupport提供分页支持
-        UserServiceImpl userService = new UserServiceImpl();
-        RoleServiceImpl roleService = new RoleServiceImpl();
         int totalCount = userService.getUserCount(userName, Integer.parseInt(userRole));
         PageSupport pageSupport = new PageSupport();
         pageSupport.setPageSize(PAGE_SIZE);
@@ -228,9 +236,8 @@ static {
         user.setCreatedBy(o.getId());
         user.setCreationDate(new Date());
         //3.
-        service = new UserServiceImpl();
         LOG.info("["+new Date()+"] " +"["+ req.getRemoteAddr() +"]"+" 用户"+user.getUserCode()+"添加用户"+user.toString());
-        boolean res = service.addUser(user);
+        boolean res = userService.addUser(user);
         if(res) {
             resp.sendRedirect(req.getContextPath()+"/jsp/user.do?method=query");
         } else {
@@ -243,7 +250,6 @@ static {
     返回前端json数据， 用于ajax获取用户添加页面的角色名
  */
     protected void getRoleList(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        RoleServiceImpl roleService = new RoleServiceImpl();
         List<Role> roleList = roleService.getRoleList(0);
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
@@ -260,8 +266,7 @@ static {
         if(userCode == null || userCode.length() == 0 || userCode.equals("")){
             map.put("userCode", "null");
         } else {
-            service = new UserServiceImpl();
-            User user = service.findByUserCode(userCode);
+            User user = userService.findByUserCode(userCode);
             if (user != null && user.getUserCode() != null && user.getUserCode().equals(userCode)) {
                 map.put("userCode", "exist");
             } else {
@@ -277,8 +282,7 @@ static {
     }
     protected void view(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
         String uid = req.getParameter("uid");
-        service = new UserServiceImpl();
-        User user = service.findById(Integer.parseInt(uid));
+        User user = userService.findById(Integer.parseInt(uid));
         LOG.info("["+new Date()+"] " +"["+ req.getRemoteAddr() +"]"+" 用户"+user.getUserCode()+"查看用户信息");
         req.setAttribute("user", user);
         if(!resp.isCommitted())
@@ -290,8 +294,7 @@ static {
         Map<String, String> map = new HashMap<>();
         if(o.getUserRole() == 1){
             String uid = req.getParameter("uid");
-            service = new UserServiceImpl();
-            boolean res = service.delUser(Integer.parseInt(uid));
+            boolean res = userService.delUser(Integer.parseInt(uid));
             if(res){
                 map.put("delResult", "true");
             } else {
@@ -308,9 +311,7 @@ static {
     }
     protected void modify(HttpServletRequest req, HttpServletResponse resp)throws ServletException, IOException{
         String uid = req.getParameter("uid");
-
-        service = new UserServiceImpl();
-        User user = service.findById(Integer.parseInt(uid));
+        User user = userService.findById(Integer.parseInt(uid));
         req.setAttribute("user", user);
         req.getRequestDispatcher(req.getContextPath()+"/jsp/usermodify.jsp").forward(req, resp);
     }
@@ -339,9 +340,8 @@ static {
         Date modifyDate = new Date();
         map.put("modifyDate",new Date());
         //3. 调用service
-        service = new UserServiceImpl();
         for (String key : map.keySet()) {
-            boolean res = service.updateUser(Integer.parseInt(uid), key, map.get(key));
+            boolean res = userService.updateUser(Integer.parseInt(uid), key, map.get(key));
         }
         resp.sendRedirect(req.getContextPath()+"/jsp/user.do?method=query");
     }

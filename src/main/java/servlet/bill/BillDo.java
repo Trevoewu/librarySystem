@@ -4,11 +4,12 @@ import Bean.Bill;
 import Bean.Provider;
 import Bean.User;
 import com.alibaba.fastjson.JSONArray;
-import dao.bill.BillDaoImpl;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import service.Pro.ProService;
 import service.Pro.ProServiceImpl;
 import service.bill.BillService;
-import service.bill.BillServiceIml;
+import service.bill.BillServiceImpl;
 import util.Constant;
 import util.DB;
 import util.PageSupport;
@@ -20,12 +21,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.*;
 
 public class BillDo extends HttpServlet {
     private static int PAGE_SIZE;
+    private static BillService billService;
+    private static ProServiceImpl proService;
     static {
         //读取配置文件
         //1、创建properties对象
@@ -38,6 +40,10 @@ public class BillDo extends HttpServlet {
             e.printStackTrace();
         }
         PAGE_SIZE = Integer.parseInt(properties.getProperty("PAGE_SIZE"));
+        //通过Spring容器获得billService
+        ApplicationContext applicationContext = new AnnotationConfigApplicationContext(util.spring.SpringConfig.class);
+        billService =  applicationContext.getBean("billServiceImpl",BillServiceImpl.class);
+        proService = applicationContext.getBean("proServiceImpl",ProServiceImpl.class);
     }
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -93,8 +99,6 @@ public class BillDo extends HttpServlet {
         List<Provider> providerList;
         // 以及下列参数： totalPageCount（总页数），totalCount（查询到的用户数），currentPageNo（当前页）
         // 这些参数的获取需要先调用userService.getUserCount查询用户数， 然后调用PageSupport提供分页支持
-        BillService billService = new BillServiceIml();
-        ProService proService  = new ProServiceImpl();
         int totalCount = billService.getBillCount(queryProductName, Integer.parseInt(queryProviderId));
         PageSupport pageSupport = new PageSupport();
         pageSupport.setPageSize(PAGE_SIZE);
@@ -121,7 +125,6 @@ public class BillDo extends HttpServlet {
     }
     protected void getProList(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException{
         resp.setContentType("application/json");
-        ProService proService = new ProServiceImpl();
         List<Provider> proList = proService.getProList(null, null, 1, PAGE_SIZE);
         String jsonString = JSONArray.toJSONString(proList);
         PrintWriter writer = resp.getWriter();
@@ -131,8 +134,7 @@ public class BillDo extends HttpServlet {
     protected void modify(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException{
         String billId = req.getParameter("billid");
         System.out.println("进入订阅记录修改界面 id = "+billId);
-        BillServiceIml service = new BillServiceIml();
-        Bill bill = service.findBillById(Integer.parseInt(billId));
+        Bill bill = billService.findBillById(Integer.parseInt(billId));
         req.setAttribute("bill",bill);
         System.out.println("bill-->"+bill.toString());
         req.getRequestDispatcher("/jsp/billmodify.jsp").forward(req,resp);
@@ -160,9 +162,8 @@ public class BillDo extends HttpServlet {
 //        map.put("providerId",Integer.parseInt(providerId));
         map.put("modifyBy",o.getId());
         map.put("modifyDate",new Date());
-        BillService service = new BillServiceIml();
         for (String key : map.keySet()) {
-            boolean res = service.updateBill(Integer.parseInt(uid), key, map.get(key));
+            boolean res = billService.updateBill(Integer.parseInt(uid), key, map.get(key));
         }
         resp.sendRedirect(req.getContextPath()+"/jsp/bill.do?method=query");
     }
@@ -170,8 +171,7 @@ public class BillDo extends HttpServlet {
 
         String id = req.getParameter("billid");
         System.out.println("id--->"+id);
-        BillService service = new BillServiceIml();
-        Bill bill = service.findBillById(Integer.parseInt(id));
+        Bill bill = billService.findBillById(Integer.parseInt(id));
         req.setAttribute("bill",bill);
         System.out.println(bill.toString());
         req.getRequestDispatcher("/jsp/billview.jsp").forward(req, resp);
@@ -182,8 +182,7 @@ public class BillDo extends HttpServlet {
         if(billId == null || billId.equals("")){
             hashMap.put("delResult","false");
         } else {
-            BillServiceIml serviceIml = new BillServiceIml();
-            boolean flag = serviceIml.delBillById(Integer.parseInt(billId));
+            boolean flag = billService.delBillById(Integer.parseInt(billId));
             if(flag) {
                 hashMap.put("delResult","true");
             } else {
@@ -202,7 +201,7 @@ public class BillDo extends HttpServlet {
                 1,
                 Integer.parseInt(providerId),user.getId(),new Date()
         );
-        BillServiceIml serviceIml = new BillServiceIml();
+        BillServiceImpl serviceIml = new BillServiceImpl();
         boolean res = serviceIml.addBill(bill);
         if(res) {
             response.sendRedirect("/jsp/bill.do?method=query");
